@@ -15,13 +15,12 @@ public class Node {
 	private final int value;
 	private final java.util.List<Connection> connections;
 
-	public Node(int id, int x, int y) {
+	public Node(int id, int x, int y, int value) {
 		this.id = id;
 		this.x = x;
 		this.y = y;
 		this.color = Color.BLUE;
-		SecureRandom rng = new SecureRandom();
-		this.value = rng.nextInt(100) + 10;
+		this.value = value;
 		connections = new ArrayList<>();
 	}
 
@@ -57,7 +56,7 @@ public class Node {
 
 	public void addConnection(Connection c) {
 		for(Connection existing : connections) {
-			if(existing.getTo().equals(c.getTo())) {
+			if(existing.to().equals(c.to())) {
 				return; // Already connected
 			}
 		}
@@ -66,7 +65,7 @@ public class Node {
 
 	public boolean isConnectedTo(Node other) {
 		for(Connection c : connections) {
-			if(c.getTo().equals(other)) {
+			if(c.to().equals(other)) {
 				return true;
 			}
 		}

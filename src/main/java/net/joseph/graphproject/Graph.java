@@ -12,22 +12,16 @@ public class Graph {
 	private final Random rand;
 
 
+
 	public Graph(int numNodes, int width, int height) {
-		rand = new Random();
+		this(numNodes, width, height, new Random());
+	}
+
+	public Graph(int numNodes, int width, int height, Random random) {
+		rand = random;
 		this.numNodes = numNodes;
 		this.width = width;
 		this.height = height;
-		nodes = new ArrayList<>();
-		edges = new ArrayList<>();
-		generateNodes();
-		generateRandomGraph();
-	}
-
-	public Graph() {
-		rand = new Random();
-		this.numNodes = 5;
-		this.width = 800;
-		this.height = 600;
 		nodes = new ArrayList<>();
 		edges = new ArrayList<>();
 		generateNodes();
@@ -40,7 +34,7 @@ public class Graph {
 		for (int i = 0; i < numNodes; i++) {
 			int x  = rand.nextInt(gWidth) + 50;
 			int y  = rand.nextInt(gHeight) + 50;
-			nodes.add(new Node(i, x, y));
+			nodes.add(new Node(i, x, y, rand.nextInt(100) + 10));
 		}
 	}
 
@@ -54,8 +48,8 @@ public class Graph {
 			}
 			int rNode = rand.nextInt(InGraph.size());
 			Node selectedNode = InGraph.get(rNode);
-			n.addConnection(new Connection(n, selectedNode));
-			selectedNode.addConnection(new Connection(selectedNode, n));
+			n.addConnection(new Connection(n, selectedNode, randomWeight()));
+			selectedNode.addConnection(new Connection(selectedNode, n, randomWeight()));
 
 			for (Node g : InGraph) {
 				if (g == selectedNode) continue;
@@ -64,8 +58,8 @@ public class Graph {
 				int totalConnections = n.getConnections().size() + g.getConnections().size();
 				int threshold = Math.max(10, 90 - (totalConnections * 10));
 				if (pairRng.nextInt(100) < threshold) {
-					n.addConnection(new Connection(n, g));
-					g.addConnection(new Connection(g, n));
+					n.addConnection(new Connection(n, g, randomWeight()));
+					g.addConnection(new Connection(g, n, randomWeight()));
 				}
 			}
 			InGraph.add(n);
@@ -87,16 +81,20 @@ public class Graph {
 		Set<String> addedEdges = new HashSet<>();
 		for (Node node : InGraph) {
 			for (Connection conn : node.getConnections()) {
-				int id1 = conn.getFrom().getId();
-				int id2 = conn.getTo().getId();
+				int id1 = conn.from().getId();
+				int id2 = conn.to().getId();
 				String edgeKey = Math.min(id1, id2) + "-" + Math.max(id1, id2);
 				if (!addedEdges.contains(edgeKey)) {
 					System.out.println("Creating edge: " + id1 + " -> " + id2);
-					this.edges.add(new Edge(conn.getFrom(), conn.getTo(), conn.getValue()));
+					this.edges.add(new Edge(conn.from(), conn.to(), conn.value()));
 					addedEdges.add(edgeKey);
 				}
 			}
 		}
+	}
+
+	private int randomWeight() {
+		return rand.nextInt(100);
 	}
 
 	public int getNodeSize() {
