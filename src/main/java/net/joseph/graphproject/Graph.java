@@ -11,7 +11,14 @@ public class Graph {
 	private final int height;
 	private final Random rand;
 
-
+	public Graph(List<Node> nodes, List<Edge> edges, int height, int width) {
+		this.nodes = nodes;
+		this.edges = edges;
+		numNodes = nodes.size();
+		this.height = height;
+		this.width = width;
+		rand = null;
+	}
 
 	public Graph(int numNodes, int width, int height) {
 		this(numNodes, width, height, new Random());
@@ -115,6 +122,11 @@ public class Graph {
 
 	public List<Edge> getEdges() {
 		return Collections.unmodifiableList(edges);
+	}
+
+	public void setNodeConnection(Node a, Node b, int weight) {
+		a.addConnection(new Connection(a, b, weight));
+		b.addConnection(new Connection(b, a, weight));
 	}
 
 	public void clearGraph() {

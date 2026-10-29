@@ -2,7 +2,7 @@ package net.joseph.graphproject;
 
 import java.awt.*;
 
-class Edge {
+public class Edge {
 	private Node from;
 	private Node to;
 	private double weight;
