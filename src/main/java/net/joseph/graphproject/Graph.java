@@ -55,8 +55,8 @@ public class Graph {
 			}
 			int rNode = rand.nextInt(InGraph.size());
 			Node selectedNode = InGraph.get(rNode);
-			n.addConnection(new Connection(n, selectedNode, randomWeight()));
-			selectedNode.addConnection(new Connection(selectedNode, n, randomWeight()));
+			setNodeConnection(n, selectedNode, distanceWeight(n, selectedNode));
+			setNodeConnection(n, selectedNode, distanceWeight(n, selectedNode));
 
 			for (Node g : InGraph) {
 				if (g == selectedNode) continue;
@@ -66,7 +66,7 @@ public class Graph {
 				int threshold = Math.max(10, 90 - (totalConnections * 10));
 				if (pairRng.nextInt(100) < threshold) {
 					n.addConnection(new Connection(n, g, randomWeight()));
-					g.addConnection(new Connection(g, n, randomWeight()));
+					n.addConnection(new Connection(g, n, randomWeight()));
 				}
 			}
 			InGraph.add(n);
@@ -77,8 +77,8 @@ public class Graph {
 				int val = rand.nextInt(InGraph.size());
 				Node selectedNode = InGraph.get(val);
 				if(!n.isConnectedTo(selectedNode) && !selectedNode.equals(n)) {
-					n.addConnection(new Connection(n, selectedNode));
-					selectedNode.addConnection(new Connection(selectedNode, n));
+					setNodeConnection(n, selectedNode, distanceWeight(n, selectedNode));
+					setNodeConnection(n, selectedNode, distanceWeight(n, selectedNode));
 				}
 			}
 		}
@@ -122,6 +122,10 @@ public class Graph {
 
 	public List<Edge> getEdges() {
 		return Collections.unmodifiableList(edges);
+	}
+
+	private static int distanceWeight(Node a, Node b) {
+		return (int) Math.ceil(Math.hypot(a.getX() - b.getX(), a.getY() - b.getY()));
 	}
 
 	public void setNodeConnection(Node a, Node b, int weight) {
